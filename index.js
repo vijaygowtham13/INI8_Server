@@ -12,15 +12,15 @@ import pkg from 'pg'
 dotenv.config()
 const { Pool } = pkg
 
-// ---------- DB (Supabase Postgres) ----------
+
 const pool = new Pool({
   connectionString: process.env.SUPABASE_DB_URL,
   ssl: {
-    rejectUnauthorized: false, // required for Supabase managed SSL
+    rejectUnauthorized: false, 
   },
 })
 
-// quick DB check (optional, but useful during dev)
+
 pool
   .query('SELECT NOW()')
   .then((res) => console.log('DB connected at:', res.rows[0].now))
@@ -34,12 +34,12 @@ app.use(express.json())
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// ---------- File upload setup ----------
+
 const uploadFolder = path.join(__dirname, 'uploads')
 
 if (!fs.existsSync(uploadFolder)) {
   fs.mkdirSync(uploadFolder, { recursive: true })
-  console.log('📁 Created uploads folder at', uploadFolder)
+  console.log(' Created uploads folder at', uploadFolder)
 }
 
 const storage = multer.diskStorage({
@@ -62,17 +62,12 @@ const upload = multer({
   },
 })
 
-// ---------- Routes ----------
 
-// Health check
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Patient document API running' })
 })
 
-/**
- * POST /documents/upload
- * Form-data: file (PDF)
- */
+
 app.post('/documents/upload', upload.single('file'), async (req, res) => {
   try {
     const file = req.file
@@ -96,10 +91,7 @@ app.post('/documents/upload', upload.single('file'), async (req, res) => {
   }
 })
 
-/**
- * GET /documents
- * Returns list of all documents
- */
+
 app.get('/documents', async (req, res) => {
   try {
     const result = await pool.query(
@@ -112,10 +104,7 @@ app.get('/documents', async (req, res) => {
   }
 })
 
-/**
- * GET /documents/:id
- * Download a single file
- */
+
 app.get('/documents/:id', async (req, res) => {
   try {
     const { id } = req.params
@@ -131,7 +120,7 @@ app.get('/documents/:id', async (req, res) => {
 
     const doc = result.rows[0]
 
-    // make sure file exists
+    
     if (!fs.existsSync(doc.filepath)) {
       return res.status(404).json({ error: 'File not found on server' })
     }
@@ -143,10 +132,7 @@ app.get('/documents/:id', async (req, res) => {
   }
 })
 
-/**
- * DELETE /documents/:id
- * Deletes DB record + file from disk
- */
+
 app.delete('/documents/:id', async (req, res) => {
   try {
     const { id } = req.params
@@ -162,7 +148,7 @@ app.delete('/documents/:id', async (req, res) => {
 
     const doc = result.rows[0]
 
-    // Delete file from disk (ignore error if already missing)
+  
     fs.unlink(doc.filepath, (err) => {
       if (err) {
         console.error('Error deleting file from disk:', err.message)
@@ -178,8 +164,8 @@ app.delete('/documents/:id', async (req, res) => {
   }
 })
 
-// ---------- Start server ----------
+
 const PORT = process.env.PORT || 4000
 app.listen(PORT, () => {
-  console.log(`🚀 Backend running on port ${PORT}`)
+  console.log(` Backend running on port ${PORT}`)
 })
