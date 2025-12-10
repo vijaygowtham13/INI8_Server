@@ -49,11 +49,15 @@ GET http://localhost:4000/ →
 
 Base URL (local): http://localhost:4000
 
-# Method	Endpoint	      Description
-POST	 /documents/upload	 Upload a PDF
-GET	     /documents	         List all documents
-GET	     /documents/:id	     Download a document
-DELETE	 /documents/:id	     Delete a document
+## API Endpoints
+
+| Method | Endpoint             | Description            |
+|--------|-----------------------|------------------------|
+| POST   | /documents/upload     | Upload a PDF           |
+| GET    | /documents            | List all documents     |
+| GET    | /documents/:id        | Download a document    |
+| DELETE | /documents/:id        | Delete a document      |
+
 
 👤 Author
 
